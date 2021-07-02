@@ -6,46 +6,48 @@ Author: Sohaib Khadri
 """
 
 from tkinter import *
-from tkinter import colorchooser, messagebox, ttk
+from tkinter import colorchooser, messagebox, ttk, END
 from ttkthemes import themed_tk as tk
 import os
 
-'''
+
 # GUI system
 root = tk.ThemedTk()
 root.get_themes()
 root.set_theme("equilux")
 root.title("Mocker")
-root.iconbitmap('images/icon.ico')
-root.resizable(False, False)
+root.iconbitmap('icon.ico')
 root.configure(bg='grey20')
+root.resizable(False, False)
 
-notebook_style = ttk.Style()
-notebook_style.configure('Custom.TNotebook.Tab', padding=[46, 0])
+input_frame = LabelFrame(root,text=" Input ", font=('Malgun Gothic', 15), fg='White', padx=10, pady=10, bg='grey25', borderwidth = 0,highlightthickness=0)
+input_frame.pack()
+middle_frame = LabelFrame(root, padx=10, pady=0, bg='grey20', borderwidth = 0,highlightthickness=0)
+middle_frame.pack()
+output_frame = LabelFrame(root,text=" Output ", font=('Malgun Gothic', 15), fg='White', padx=10, pady=10, bg='grey25', borderwidth = 0,highlightthickness=0)
+output_frame.pack()
 
-notebook = ttk.Notebook(root, style='Custom.TNotebook')
-notebook.grid(row=1, column=0, padx=15, pady=15)
+add_qs = IntVar()
 
-menu_tab = LabelFrame(notebook, padx=10, pady=5, bg='grey20')
-settings_tab = LabelFrame(notebook, padx=10, pady=5, bg='grey20')
-#menu_tab.pack()
-#settings_tab.pack()
+input_field = Text(input_frame, height=10, width=40)
+input_field.pack()
 
-preset_frame = LabelFrame(menu_tab, text=" Presets ", font=('Malgun Gothic', 15), fg='White', padx=5, pady=5,
-                          bg='grey20')
-preset_frame.grid(row=1, column=0, sticky=W+E, padx=5, pady=2)
-'''
+add_qs_button = Checkbutton(middle_frame, text = "Add Quotations", variable = add_qs, bg='grey20', fg = 'white', highlightcolor = 'grey20', selectcolor="black")
+add_qs_button.pack()
 
-if __name__ == '__main__':
-    # GUI loop
-    #root.mainloop()
+output_field = Text(output_frame, height=10, width=40)
+#output_field.config(state=DISABLED)
+output_field.pack()
 
-    input_string = input()
+def mock():
+    input_string = input_field.get("1.0",END).rstrip()
+    
     output = ""
     switch = True
-    add_qs = True
 
-    if add_qs:
+    #print(add_qs.get())
+
+    if add_qs.get():
         output += "\""
     for char in input_string:
         #print(ord(char))
@@ -63,11 +65,30 @@ if __name__ == '__main__':
         else:
             output += char
             switch = not switch
-        
-        
-        
-        
-    if add_qs:
+
+    if add_qs.get():
         output += "\""
-    
+
     print("out:" + output)
+    output_field.delete('1.0', END)
+    output_field.insert(END, output)
+    
+
+mock_button = Button(middle_frame, text = "Mock!", command=mock, bg='grey20', fg = 'white')
+mock_button.pack()
+
+copy_button = Button(middle_frame, text = "Copy to Clipboard", command = lambda: root.clipboard_append(output_field.get("1.0",END).rstrip()), bg='grey20', fg = 'white')
+copy_button.pack()
+
+
+
+
+
+
+if __name__ == '__main__':
+    # GUI loop
+    
+    root.mainloop()
+
+    
+    
